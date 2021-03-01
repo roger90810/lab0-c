@@ -46,8 +46,7 @@ bool q_insert_head(queue_t *q, char *s)
 {
     if (q == NULL)
         return false;
-    list_ele_t *newh;
-    newh = malloc(sizeof(list_ele_t));
+    list_ele_t *newh = malloc(sizeof(list_ele_t));
     if (newh == NULL)
         return false;
     int n = strlen(s);
@@ -89,7 +88,9 @@ bool q_insert_tail(queue_t *q, char *s)
     strncpy(newt->value, s, n);
     newt->value[n] = '\0';
     newt->next = NULL;
-    if (q->size != 0)
+    if (q->size == 0)
+        q->head = newt;
+    else
         q->tail->next = newt;
     q->tail = newt;
     q->size++;
@@ -145,7 +146,6 @@ void q_reverse(queue_t *q)
 {
     if (q == NULL)
         return;
-    // a->b->c->d->e
     list_ele_t *n = NULL;
     list_ele_t *t = NULL;
     list_ele_t *p = q->head;
@@ -166,6 +166,48 @@ void q_reverse(queue_t *q)
  */
 void q_sort(queue_t *q)
 {
-    /* TODO: You need to write the code for this function */
-    /* TODO: Remove the above comment when you are about to implement. */
+    if (q == NULL || q->size <= 1)
+        return;
+    q->head = list_split(q->head);
+    list_ele_t *t = q->head;
+    while (t->next)
+        t = t->next;
+    q->tail = t;
+}
+
+list_ele_t *list_split(list_ele_t *head)
+{
+    if (head == NULL || head->next == NULL)
+        return head;
+
+    list_ele_t *fast = head->next;
+    list_ele_t *slow = head;
+
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    fast = slow->next;
+    slow->next = NULL;
+
+    list_ele_t *l1 = list_split(head);
+    list_ele_t *l2 = list_split(fast);
+
+    return list_merge(l1, l2);
+}
+
+list_ele_t *list_merge(list_ele_t *l1, list_ele_t *l2)
+{
+    if (l1 == NULL)
+        return l2;
+    if (l2 == NULL)
+        return l1;
+
+    if (strcmp(l1->value, l2->value) < 0) {
+        l1->next = list_merge(l1->next, l2);
+        return l1;
+    } else {
+        l2->next = list_merge(l1, l2->next);
+        return l2;
+    }
 }

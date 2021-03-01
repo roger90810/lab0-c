@@ -93,4 +93,15 @@ void q_reverse(queue_t *q);
  */
 void q_sort(queue_t *q);
 
+/* Divide a list to two half lists
+ * Use in merge sort.
+ */
+list_ele_t *list_split(list_ele_t *list);
+
+/*
+ * Merge two lists to one acending order list.
+ * Use in merge sort.
+ */
+list_ele_t *list_merge(list_ele_t *l1, list_ele_t *l2);
+
 #endif /* LAB0_QUEUE_H */
